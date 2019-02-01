@@ -167,35 +167,60 @@ end
     
     describe '#one_pair' do
       it 'identifies a pair' do
-        expect(one_pair.one_pairs).to eq(true)
+        expect(one_pair.one_pair?).to eq(true)
       end
     end
     describe '#two_pair' do
       it 'identifies two-pair' do
-        expect(two_pair.two_pairs).to eq(true)
+        expect(two_pair.two_pair?).to eq(true)
       end
     end
 
     describe 'three_of_a_kind' do
       it 'identifies three of a kind' do
-        expect(three_of_a_kind.three_of_a_kind).to eq(true)
+        expect(three_of_a_kind.three_of_a_kind?).to eq(true)
       end
     end
     
     describe '#straight' do
       it 'identifies a straight w/o ace' do
-        expect(straight_no_ace.straight).to eq(true)
+        expect(straight_no_ace.straight?).to eq(true)
       end
     
       it 'identifies a straight with ace' do
-        expect(straight_with_ace.straight).to eq(true)
+        expect(straight_with_ace.straight?).to eq(true)
       end
     end
-    
 
+    describe '#flush' do 
+      it 'identifies a flush' do
+        expect(flush.flush?).to eq(true)
+      end
+    end
+
+    describe '#full_house' do
+      it 'identifies a full house' do
+        expect(full_house.full_house?).to eq(true)
+      end
+    end
+
+    describe '#four_of_a_kind' do
+      it 'identifies four of a kind' do
+        expect(four_of_a_kind.four_of_a_kind?).to eq(true)
+      end
+    end
+
+    describe '#straight_flush' do
+      it 'identifies a straight flush' do
+        expect(straight_flush.straight_flush?).to eq(true)
+      end
+    end
+
+    describe '#royal_flush' do
+      it 'identifies a royal flush' do
+        expect(royal_flush.royal_flush?).to eq(true)
+      end
+    end
   end
-
-
-
 
 end

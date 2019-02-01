@@ -1,17 +1,18 @@
 require_relative 'card'
 class Hand
 
-  POSSIBLE_HANDS = {
-    :royal_flush => 27,
-    :straight_flush => 26,
-    :four_of_a_kind => 25,
-    :full_house => 24,
-    :flush => 23,
-    :straight => 22,
-    :three_of_a_kind => 21,
-    :two_pair => 21,
-    :one_pair => 20
-  }
+  POSSIBLE_HANDS = [
+    :royal_flush?,
+    :straight_flush?,
+    :four_of_a_kind?,
+    :full_house?,
+    :flush?,
+    :straight?,
+    :three_of_a_kind?,
+    :two_pair?,
+    :one_pair?,
+    :high_card?
+  ]
   attr_accessor :cards
   def initialize(cards)
     raise 'must contain 5 cards' unless cards.count == 5
@@ -57,35 +58,57 @@ class Hand
     pairs = []
     @cards.map(&:value).uniq.each do |val|
       if value_count(val) == 2
-        pairs << @cards.select {|card| card.value == val} 
+        pairs << @cards.select {|card| card.value == val}
       end
     end
     pairs
   end
-  
-  def one_pairs
+
+  def high_card?
+    true
+  end
+
+  def one_pair?
     pairs.count == 1
   end
 
-  def two_pairs
+  def two_pair?
     pairs.count == 2
   end
-  
-  def three_of_a_kind
-    @cards.map(&:value).each do |val|
-      return value_count(val) == 3
-    end
+
+  def three_of_a_kind?
+    @cards.map(&:value).any? { |val| value_count(val) == 3 }
   end
 
-  def straight
+  def straight?
     if has_a?(:ace) && has_a?(:two)
       straight = Card.values[0..3] + [:ace]
     else
       start_pos = Card.values.index(@cards[0].value)
-      straight = Card.values[start_pos..(start_pos + 4)] 
+      straight = Card.values[start_pos..(start_pos + 4)]
     end
-    @cards.map(&:value) == straight 
-    end
+    @cards.map(&:value) == straight
+  end
+
+  def flush?
+    @cards.map(&:suit).uniq.count == 1
+  end
+
+  def full_house?
+    one_pair? && three_of_a_kind?
+  end
+
+  def four_of_a_kind?
+    @cards.map(&:value).any? { |val| value_count(val) == 4 }
+  end
+
+  def straight_flush?
+    straight? && flush?
+  end
+
+  def royal_flush?
+    straight_flush? && (@cards.map(&:value) == Card.royal_values)
+  end
 
 end
 
