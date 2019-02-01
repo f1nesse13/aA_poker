@@ -50,8 +50,7 @@ class Hand
   end
 
   def has_a?(value)
-    @cards.map(&:value).include?(value) ||
-    @cards.map(&:suit).include?(value)
+    @cards.map(&:value).include?(value) || @cards.map(&:suit).include?(value)
   end
 
   def pairs
@@ -79,8 +78,8 @@ class Hand
   end
 
   def straight
-    if @cards.has_a?(:ace) && @cards.has_a?(:two)
-      straight = Card.values[0..3] + :ace
+    if has_a?(:ace) && has_a?(:two)
+      straight = Card.values[0..3] + [:ace]
     else
       start_pos = Card.values.index(@cards[0].value)
       straight = Card.values[start_pos..(start_pos + 4)] 
