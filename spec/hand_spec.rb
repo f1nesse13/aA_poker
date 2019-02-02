@@ -221,6 +221,13 @@ end
         expect(royal_flush.royal_flush?).to eq(true)
       end
     end
+
+    describe '#best_hand' do
+      it 'returns the index of the best hand' do
+        expect(flush.best_hand).to eq(4)
+      end
+    end
+
   end
 
 end

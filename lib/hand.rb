@@ -46,7 +46,15 @@ class Hand
     old_cards.each { |card| @cards.delete(card) }
   end
 
+  def best_hand
+    # iterates thru POSSIBLE_HANDS and returns the index if the method call returns true
+    POSSIBLE_HANDS.each do |method|
+      return POSSIBLE_HANDS.index(method) if self.send(method)
+    end
+  end
+
   def value_count(value)
+    #helper method to get the number of values in a hand
     @cards.map(&:value).count(value)
   end
 
@@ -55,6 +63,7 @@ class Hand
   end
 
   def pairs
+    # helper method for one_pair? and two_pair? - creates an array of cards that are pairs
     pairs = []
     @cards.map(&:value).uniq.each do |val|
       if value_count(val) == 2
