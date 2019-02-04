@@ -14,12 +14,10 @@ class Hand
     :high_card?
   ]
   attr_accessor :cards
+  
   def initialize(cards)
     raise 'must contain 5 cards' unless cards.count == 5
     @cards = cards
-    @hand_value = nil
-    @matches = []
-    @card_values = []
     @cards.sort!
   end
 
