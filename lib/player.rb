@@ -1,7 +1,7 @@
 require_relative 'hand'
 class Player
-  attr_reader :bank, :current_bet
-  attr_accessor :hand, :cards
+  attr_reader :current_bet
+  attr_accessor :hand, :cards, :bank
 
   def self.buy_in(bank)
       Player.new(bank)
@@ -21,9 +21,7 @@ class Player
     choice = gets.chomp
     case choice
       when 'c' then :call
-      when 'b'
-        bet_amount = ask_for_bet
-        place_bet(bet_amount)
+      when 'b' then :bet
       when 'f' then :fold
       else
         puts 'You must respond with c, b or f'
@@ -40,12 +38,12 @@ class Player
 
   def ask_for_discard
     puts "Select which cards you'd like to discard (1,2,3 etc.)"
-    input = gets.chomp
+    input = gets.chomp.split(", ").map(&:to_i)
     if input == ""
-      return []
+      []
     else
-      cards = input.split(",").map do |index|
-        hand.cards[index - 1]
+      cards = input.map do |index|
+        hand.cards[index-1]
       end
     end
     cards
@@ -83,6 +81,10 @@ class Player
 
   def reset_fold
     @folded = false
+  end
+
+  def reset_current_bet
+    @current_bet = 0
   end
 
   def collect_winnings(total)

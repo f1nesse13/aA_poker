@@ -29,10 +29,13 @@ class Hand
     @cards.sort!
   end
 
+  def self.winner(hands)
+    hands.sort.last
+  end
+
   def exchange_cards(old_cards, new_cards)
     raise 'hand must contain 5 cards' if old_cards.count != new_cards.count
-    discard_old_cards(old_cards)
-    take_new_cards(new_cards)
+    take_new_cards(new_cards) && discard_old_cards(old_cards) && sort!
     old_cards
   end
 
