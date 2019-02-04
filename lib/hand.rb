@@ -1,19 +1,20 @@
-require_relative 'card'
+# require_relative 'card'
+require_relative 'tie_breaker'
 class Hand
-
+  include TieBreaker
   POSSIBLE_HANDS = [
-    :royal_flush?,
-    :straight_flush?,
-    :four_of_a_kind?,
-    :full_house?,
-    :flush?,
-    :straight?,
-    :three_of_a_kind?,
-    :two_pair?,
-    :one_pair?,
-    :high_card?
+    :royal_flush,
+    :straight_flush,
+    :four_of_a_kind,
+    :full_house,
+    :flush,
+    :straight,
+    :three_of_a_kind,
+    :two_pair,
+    :one_pair,
+    :high_card
   ]
-  attr_accessor :cards
+  attr_accessor :cards, :best
   
   def initialize(cards)
     raise 'must contain 5 cards' unless cards.count == 5
@@ -50,7 +51,7 @@ class Hand
   def best_hand
     # iterates thru POSSIBLE_HANDS and returns the index if the method call returns true
     POSSIBLE_HANDS.each do |method|
-      return POSSIBLE_HANDS.index(method) if self.send(method)
+      return method if self.send("#{method}?")
     end
   end
 
@@ -72,6 +73,22 @@ class Hand
       end
     end
     pairs
+  end
+
+  def set_card(n)
+    cards.find { |card| value_count(card.value) == n }
+  end
+
+  def high_card
+    @cards.sort.last
+  end
+
+  def royal?
+    Card.royal_values.all? { |value| @cards.map(&:value).include?(value) }
+  end
+
+  def cards_without(value)
+    @cards.select { |card| card.value != value }
   end
 
   def high_card?
@@ -120,5 +137,14 @@ class Hand
     straight_flush? && (@cards.map(&:value) == Card.royal_values)
   end
 
+  def <=>(other_hand)
+    if self == other_hand
+      0
+    elsif best_hand != other_hand.best_hand
+      POSSIBLE_HANDS.reverse.index(best_hand) <=> POSSIBLE_HANDS.reverse.index(other_hand.best_hand)
+    else
+      tie_breaker(other_hand)
+    end
+  end
 end
 

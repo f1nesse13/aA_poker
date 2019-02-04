@@ -43,7 +43,7 @@ attr_reader :players, :pot, :deck
       puts player.hand
       cards = player.ask_for_discard
       deck.return_cards(cards)
-      player.discard_cards(cards, deck.take(cards.count))
+      player.discard_cards(cards, deck.take_cards(cards.count))
     end
   end
 
@@ -61,6 +61,10 @@ attr_reader :players, :pot, :deck
 
   def add_to_pot(amount)
     @pot += amount
+  end
+
+  def return_cards
+    players.each { |player| @deck.return_cards(player.return_cards) }
   end
 
   def show_display(index, high_bet)
@@ -82,10 +86,11 @@ attr_reader :players, :pot, :deck
     players.each(&:reset_current_bet)
 
     high_bet = 0
-    no_raises = true
+    no_raises = false
     most_recent_better = nil
 
     until no_raises
+      no_raises = true
       players.each_with_index do |player, i|
         break if most_recent_better == player || round_over?
 
@@ -119,15 +124,16 @@ attr_reader :players, :pot, :deck
   def reveal_hands
     players.each do |player|
       next if player.folded?
-      puts "#{player.hand} #{Hand::POSSIBLE_HANDS[player.hand.best_hand]}"
+      puts "#{player.hand} #{winner.hand.best}"
     end
   end
 
-  def round_end(pos)
+  def round_end
     reveal_hands
-    puts "winner is #{winner.hand} winning $#{pot} with a #{Hand::POSSIBLE_HANDS[winner.hand.best_hand]}"
+    puts "winner is #{winner.hand} winning $#{pot} with a #{winner.hand.best_hand.to_s.split("_").join(" ")}"
     winner.collect_winnings(@pot)
     @pot = 0
+    return_cards
   end
 
   def winner
